@@ -5,25 +5,28 @@ import java.util.List;
 
 public class MovieRental {
 
-    PriceService priceService;
-
-    private List<Movie> movies = new ArrayList<>();
+    private List<Movie> movies;
     private int duration;
 
-    public MovieRental(int duration, PriceService priceService) {
+    private PriceService priceService;
+    private FidelityPointsService fidelityPointsService;
+
+    public MovieRental(int duration, PriceService priceService, FidelityPointsService fidelityPointsService) {
+        this.movies = new ArrayList<>();
         this.duration = duration;
         this.priceService = priceService;
+        this.fidelityPointsService = fidelityPointsService;
     }
 
     public double getPrice() {
         return movies.stream()
-                .mapToDouble(movie -> movie.getType().calculPrice.apply(priceService, duration))
+                .mapToDouble(movie -> movie.getType().computePrice.apply(priceService, duration))
                 .sum();
     }
 
     public int getFidelityPoints() {
         return movies.stream()
-                .mapToInt(movie -> movie.getFidelityPoint(duration))
+                .mapToInt(movie -> movie.getType().getFidelityPoints.apply(fidelityPointsService, duration))
                 .sum();
     }
 
